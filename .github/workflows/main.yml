@@ -1,22 +1,22 @@
 # Workflow to automatically generate plots and push to repo
 name: Automated plot updates
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   workflow_dispatch:
   # Time-based workflow trigger (at 00:15, 08:15, 16:15)
   # 5-minute delay from covid19response.gr API update workflow
   # https://github.com/Covid-19-Response-Greece/covid19-greece-api/blob/2641d56dc2fba1c578992c4d5a2a85bb0ca068ac/.github/workflows/main.yml
   schedule:
-    - cron: '15 * * * *'  
+    - cron: '15 * * * *'
     #- cron: '15 0,8,16 * * *'
 
 # The job executed by the workflow
 jobs:
-  
+
   # This workflow contains a single job called "update_plot"
   update_plot:
-    
+
     # This job runs on Linux using Python 3.7 version
     runs-on: ubuntu-latest
     strategy:
@@ -29,12 +29,12 @@ jobs:
       # Checks-out the repository under $GITHUB_WORKSPACE, so the job can access it
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-             
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -45,7 +45,7 @@ jobs:
           echo ${{ github.workspace }}
           git config --local user.email "action@agithub.com"
           git config --local user.name "GitHub Action"
-        
+
       - name: Run plotter
         run: |
           cd ${{ github.workspace }}
@@ -54,10 +54,15 @@ jobs:
 
       - name: Commit files
         run: |
-          git add -A
-          git commit -m "workflow: Update plots"
+          if [ -n "$(git ls-files --others -- plots)" ]; then
+            git add -A
+            git commit -m "workflow: Update plots"
+          else
+            echo ::set-env name=CANCEL::true
+          fi
 
-      - name: Push changes                               
+      - name: Push changes
+        if: env.CANCEL == 'true'
         uses: ad-m/github-push-action@master
-        with:                                 
+        with:
          github_token: ${{ secrets.GITHUB_TOKEN }}
