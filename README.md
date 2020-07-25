@@ -19,3 +19,5 @@ Yes, by ~19% of the average number of tests, as calculated for the March 12—Ju
 
 This concerns the Saturday 15:00—Monday 15:00 timespan (local time) as reported by the Sunday and Monday reports.
 
+### [License](LICENSE.txt)
+
