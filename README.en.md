@@ -16,7 +16,7 @@ I don't really know. [Mail me](mailto:diamaltho@gmail.com) if you've read someth
 The NPHO had decided to change its report frequency from daily to weekly so the data concerns multiple days (the decision was quickly reversed nevertheless).
 
 ### Are tests in weekends reduced?
-Yes, by ~19% of the average number of tests, as calculated for the March 12—July 25 period.
+Yes, by ~33% of the average number of tests, as calculated for the March 12—July 25 period.
 
 This concerns the Saturday 15:00—Monday 15:00 timespan (local time) as reported by the Sunday and Monday reports.
 
