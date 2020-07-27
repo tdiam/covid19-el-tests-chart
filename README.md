@@ -1,7 +1,7 @@
 # Γράφημα των τεστ COVID-19 στην Ελλάδα
 [[English]](README.en.md)
 
-[![](plots/latest.png)](https://raw.githubusercontent.com/tdiam/covid19-el-plot-tests/master/plots/latest.png)
+[![](plots/latest.png)](https://raw.githubusercontent.com/tdiam/covid19-el-tests-chart/master/plots/latest.png)
 
 ### Πηγή;
 Το [API του covid19response.gr](https://covid-19-greece.herokuapp.com/) που παίρνει τα δεδομένα από τη [σελίδα της Βικιπαίδειας](https://el.wikipedia.org/wiki/%CE%A0%CE%B1%CE%BD%CE%B4%CE%B7%CE%BC%CE%AF%CE%B1_%CF%84%CE%BF%CF%85_%CE%BA%CE%BF%CF%81%CE%BF%CE%BD%CE%BF%CF%8A%CE%BF%CF%8D_%CF%83%CF%84%CE%B7%CE%BD_%CE%95%CE%BB%CE%BB%CE%AC%CE%B4%CE%B1_%CF%84%CE%BF_2020#%CE%A3%CF%84%CE%B1%CF%84%CE%B9%CF%83%CF%84%CE%B9%CE%BA%CE%AC_%CF%83%CF%84%CE%BF%CE%B9%CF%87%CE%B5%CE%AF%CE%B1) η οποία παίρνει τα δεδομένα από τον [ΕΟΔΥ](https://eody.gov.gr/epidimiologika-statistika-dedomena/ektheseis-covid-19/). Ο ημερήσιος αριθμός τεστ υπολογίζεται από τις διαφορές των αριθμών συνολικών τεστ των ημερήσιων αναφορών.
