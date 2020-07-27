@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: Push changes
-        if: env.CANCEL == 'true'
+        if: env.CANCEL != 'true'
         uses: ad-m/github-push-action@master
         with:
          github_token: ${{ secrets.GITHUB_TOKEN }}
