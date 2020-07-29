@@ -15,6 +15,9 @@ I don't really know. [Mail me](mailto:diamaltho@gmail.com) if you've read someth
 ### What happened in June 3-8?
 The NPHO had decided to change its report frequency from daily to weekly so the data concerns multiple days (the decision was quickly reversed nevertheless).
 
+### What happened on June 29?
+According to the [daily report](https://eody.gov.gr/wp-content/uploads/2020/07/covid-gr-daily-report-20200729.pdf), there was a significant increase in the total number of tests from 457540 to 511429 due to the completion of a bulk inclusion of laboratory data.
+
 ### Are tests in weekends reduced?
 Yes, by an average ~33% of the average number of tests, as calculated for the March 12—July 25 period.
 

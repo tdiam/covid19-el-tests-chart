@@ -114,6 +114,11 @@ class DailyTests:
             if date.weekday() in [0, 6]:
                 rect.set_facecolor('#175A8A')
 
+            if dates[idx] == '2020-07-29':
+                rect.set_facecolor('#B1D7F2')
+                rect.set_edgecolor('#1F78B7')
+                rect.set_hatch('//////')
+
             height = rect.get_height()
             text_y = height + 0.01 * max_height
             rotation = 90 if ys[idx] >= 0 else 0
@@ -153,10 +158,14 @@ class DailyTests:
         grouped_patch = mpatches.Patch(facecolor='#B1D7F2',
                 edgecolor='#1F78B7', hatch='\\\\\\',
                 label='Ομαδοποιημένες ημέρες (πχ. 5-8 Ιουνίου)')
+        special_patch = mpatches.Patch(facecolor='#B1D7F2',
+                edgecolor='#1F78B7', hatch='///////',
+                label='Μαζική ενσωμάτωση δεδομένων από εργαστήρια')
         ma_patch = mpatches.Patch(facecolor='#FFA500',
                 label='Κινητός μέσος όρος 7 ημερών')
         plt.legend(handles=[
-            normal_patch, weekend_patch, grouped_patch, ma_patch
+            normal_patch, weekend_patch, grouped_patch, special_patch,
+            ma_patch,
         ], loc='lower left')
 
         fig = plt.gcf()
