@@ -96,15 +96,21 @@ class DailyTests:
         ys = [d['daily_tests'] for d in self.data]
         dates = [d['date'] for d in self.data]
 
-        plt.figure(figsize=(20, 10))
-        plt.suptitle(f'Ημερήσια τεστ COVID-19 στην Ελλάδα ' \
+        fig, ax = plt.subplots(figsize=(20, 10))
+        fig.suptitle(f'Ημερήσια τεστ COVID-19 στην Ελλάδα ' \
                 f'({dates[0]} έως {dates[-1]})', y=0.93)
-        plt.title('Πηγή: Υπολογισμός διαφορών από τους αριθμούς ' \
+        ax.set_title('Πηγή: Υπολογισμός διαφορών από τους αριθμούς ' \
                 'συνολικών τεστ των επιδημιολογικών αναφορών του ' \
                 'ΕΟΔΥ', fontsize=9)
-        bar_container = plt.bar(xs, ys, color='#2283C9')
-        plt.xticks(xs[::2], labels=dates[::2], rotation=90)
-        max_height = max(ys)
+        bar_container = ax.bar(xs, ys, color='#2283C9')
+        ax.set_xticks(xs[::2])
+        ax.set_xticklabels(labels=dates[::2], rotation=90)
+
+        max_height = max(
+            # Ignore bulk inclusion date when calculating max height
+            y for y, date in zip(ys, dates)
+            if date != '2020-07-29'
+        )
         for idx, rect in enumerate(bar_container):
             if self.data[idx]['corrected']:
                 rect.set_visible(False)
@@ -114,17 +120,42 @@ class DailyTests:
             if date.weekday() in [0, 6]:
                 rect.set_facecolor('#175A8A')
 
+            height = rect.get_height()
+
             if dates[idx] == '2020-07-29':
+                if height > max_height:
+                    # Break bar because of too big height
+                    height = 1.75 * max_height
+                    rect.set_height(height)
+                    ax.set_ylim([1.1 * min(ys), 2 * max_height])
+
+                    # Create break with parallelogram and lines
+                    x = rect.get_x()
+                    w = rect.get_width()
+                    ax.add_patch(mpatches.Polygon([
+                        [x - 0.25, 1.6 * max_height],
+                        [x - 0.25, 1.64 * max_height],
+                        [x + w + 0.5, 1.66 * max_height],
+                        [x + w + 0.5, 1.62 * max_height],
+                    ], color='w', clip_on=False))
+                    ax.plot(*zip(
+                        [x - 0.25, 1.6 * max_height],
+                        [x + w + 0.5, 1.62 * max_height],
+                    ), color='k')
+                    ax.plot(*zip(
+                        [x - 0.25, 1.64 * max_height],
+                        [x + w + 0.5, 1.66 * max_height],
+                    ), color='k')
+
                 rect.set_facecolor('#B1D7F2')
                 rect.set_edgecolor('#1F78B7')
                 rect.set_hatch('//////')
 
-            height = rect.get_height()
             text_y = height + 0.01 * max_height
             rotation = 90 if ys[idx] >= 0 else 0
             if ys[idx] < 0:
                 text_y -= 350
-            plt.text(rect.get_x() + rect.get_width() / 2.0,
+            ax.text(rect.get_x() + 2 * rect.get_width() / 3.0,
                     text_y, ys[idx], ha='center', va='bottom',
                     fontsize=6, rotation=rotation)
 
@@ -137,18 +168,18 @@ class DailyTests:
             xlen = xend - xstart + 1
             height = g['total_tests'] / xlen
             width = xlen - 0.2 # margin
-            plt.bar([xmid], height, width=width, facecolor='#B1D7F2',
+            ax.bar([xmid], height, width=width, facecolor='#B1D7F2',
                     edgecolor='#1F78B7', hatch='\\\\')
 
             text_y = height + 0.01 * max_height
             rotation = 90 if height >= 0 else 0
             if height < 0:
                 text_y -= 350
-            plt.text(xmid, text_y, g['total_tests'], ha='center',
+            ax.text(xmid, text_y, g['total_tests'], ha='center',
                     va='bottom', fontsize=6, rotation=rotation)
 
         # Moving average plot
-        plt.plot(xs, self.weekly_mas, '#FFA500', linewidth=3)
+        ax.plot(xs, self.weekly_mas, '#FFA500', linewidth=3)
 
         normal_patch = mpatches.Patch(color='#2283C9',
                 label='Κανονικές ημέρες')
@@ -163,12 +194,11 @@ class DailyTests:
                 label='Μαζική ενσωμάτωση δεδομένων από εργαστήρια')
         ma_patch = mpatches.Patch(facecolor='#FFA500',
                 label='Κινητός μέσος όρος 7 ημερών')
-        plt.legend(handles=[
+        ax.legend(handles=[
             normal_patch, weekend_patch, grouped_patch, special_patch,
             ma_patch,
         ], loc='lower left')
 
-        fig = plt.gcf()
         plt.show()
 
         # Save
