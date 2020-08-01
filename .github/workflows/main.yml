@@ -53,7 +53,7 @@ jobs:
 
       - name: Commit files
         run: |
-          if [ -n "$(git ls-files --others -- plots)" ]; then
+          if [ -n "$(git ls-files --others --modified -- plots)" ]; then
             git add -A
             git commit -m "workflow: Update plots"
           else
