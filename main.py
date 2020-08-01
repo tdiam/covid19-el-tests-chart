@@ -147,8 +147,8 @@ class DailyTests:
                         [x + w + 0.5, 1.66 * max_height],
                     ), color='k')
 
-                rect.set_facecolor('#B1D7F2')
-                rect.set_edgecolor('#1F78B7')
+                rect.set_facecolor('#E4E4F4')
+                rect.set_edgecolor('#888898')
                 rect.set_hatch('//////')
 
             text_y = height + 0.01 * max_height
@@ -189,8 +189,8 @@ class DailyTests:
         grouped_patch = mpatches.Patch(facecolor='#B1D7F2',
                 edgecolor='#1F78B7', hatch='\\\\\\',
                 label='Ομαδοποιημένες ημέρες (πχ. 5-8 Ιουνίου)')
-        special_patch = mpatches.Patch(facecolor='#B1D7F2',
-                edgecolor='#1F78B7', hatch='///////',
+        special_patch = mpatches.Patch(facecolor='#E4E4F4',
+                edgecolor='#888898', hatch='///////',
                 label='Μαζική ενσωμάτωση δεδομένων από εργαστήρια')
         ma_patch = mpatches.Patch(facecolor='#FFA500',
                 label='Κινητός μέσος όρος 7 ημερών')
