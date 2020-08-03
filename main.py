@@ -125,28 +125,30 @@ class DailyTests:
             if dates[idx] == '2020-07-29':
                 if height > max_height:
                     # Break bar because of too big height
-                    height = 1.75 * max_height
+                    height = 1.25 * max_height
                     rect.set_height(height)
-                    ax.set_ylim([1.1 * min(ys), 2 * max_height])
+                    ax.set_ylim([1.2 * min(ys), 1.5 * max_height])
 
                     # Create break with parallelogram and lines
                     x = rect.get_x()
                     w = rect.get_width()
+                    break_y_off = 1.1
                     ax.add_patch(mpatches.Polygon([
-                        [x - 0.25, 1.6 * max_height],
-                        [x - 0.25, 1.64 * max_height],
-                        [x + w + 0.5, 1.66 * max_height],
-                        [x + w + 0.5, 1.62 * max_height],
+                        [x - 0.25, break_y_off * max_height],
+                        [x - 0.25, (break_y_off + 0.04) * max_height],
+                        [x + w + 0.5, (break_y_off + 0.06) * max_height],
+                        [x + w + 0.5, (break_y_off + 0.02) * max_height],
                     ], color='w', clip_on=False))
                     ax.plot(*zip(
-                        [x - 0.25, 1.6 * max_height],
-                        [x + w + 0.5, 1.62 * max_height],
+                        [x - 0.25, break_y_off * max_height],
+                        [x + w + 0.5, (break_y_off + 0.02) * max_height],
                     ), color='k')
                     ax.plot(*zip(
-                        [x - 0.25, 1.64 * max_height],
-                        [x + w + 0.5, 1.66 * max_height],
+                        [x - 0.25, (break_y_off + 0.04) * max_height],
+                        [x + w + 0.5, (break_y_off + 0.06) * max_height],
                     ), color='k')
 
+            if dates[idx] in ('2020-07-29', '2020-08-03'):
                 rect.set_facecolor('#E4E4F4')
                 rect.set_edgecolor('#888898')
                 rect.set_hatch('//////')
@@ -154,7 +156,7 @@ class DailyTests:
             text_y = height + 0.01 * max_height
             rotation = 90 if ys[idx] >= 0 else 0
             if ys[idx] < 0:
-                text_y -= 350
+                text_y -= 750
             ax.text(rect.get_x() + 2 * rect.get_width() / 3.0,
                     text_y, ys[idx], ha='center', va='bottom',
                     fontsize=6, rotation=rotation)
@@ -197,7 +199,7 @@ class DailyTests:
         ax.legend(handles=[
             normal_patch, weekend_patch, grouped_patch, special_patch,
             ma_patch,
-        ], loc='lower left')
+        ], loc='upper left')
 
         plt.show()
 
