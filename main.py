@@ -127,7 +127,7 @@ class DailyTests:
                     # Break bar because of too big height
                     height = 1.25 * max_height
                     rect.set_height(height)
-                    ax.set_ylim([1.2 * min(ys), 1.5 * max_height])
+                    ax.set_ylim([1.3 * min(ys), 1.5 * max_height])
 
                     # Create break with parallelogram and lines
                     x = rect.get_x()
@@ -156,7 +156,7 @@ class DailyTests:
             text_y = height + 0.01 * max_height
             rotation = 90 if ys[idx] >= 0 else 0
             if ys[idx] < 0:
-                text_y -= 750
+                text_y -= 1200
             ax.text(rect.get_x() + 2 * rect.get_width() / 3.0,
                     text_y, ys[idx], ha='center', va='bottom',
                     fontsize=6, rotation=rotation)
