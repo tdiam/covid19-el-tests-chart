@@ -12,6 +12,7 @@ class DailyTests:
     def __init__(self):
         self.data = []
         self.groups = []
+        self.bulks = {}
 
     def load(self):
         res = r.get(f'{API_URL}/total-tests')
@@ -32,8 +33,11 @@ class DailyTests:
 
     def run_corrections(self):
         """
+        Handle groups and bulks.
+
         Get groups (cases where there was one report for multiple
         days). Distribute number of tests on grouped days.
+        Gather bulks.
         """
         # June 3-4
         total = None
@@ -64,6 +68,10 @@ class DailyTests:
                 assert(total is not None)
                 d['daily_tests'] = total / 4
                 d['corrected'] = True
+
+        for d in self.data:
+            if d['date'] in ['2020-07-29', '2020-08-03', '2020-08-19']:
+                self.bulks[d['date']] = d
 
     def build_weekly_ma(self):
         # Must be odd
@@ -106,11 +114,28 @@ class DailyTests:
         ax.set_xticks(xs[::2])
         ax.set_xticklabels(labels=dates[::2], rotation=90)
 
+        # Max bar height excluding bulks
         max_height = max(
-            # Ignore bulk inclusion date when calculating max height
             y for y, date in zip(ys, dates)
-            if date != '2020-07-29'
+            if date not in self.bulks
         )
+
+        # Adjust bulk heights
+        bulks_to_adjust_keys = [
+            date for date, d in self.bulks.items()
+            if d['daily_tests'] > max_height
+        ]
+        bulks_to_adjust_keys.sort(key=lambda date: self.bulks[date]['daily_tests'])
+ 
+        step = 0.2 * max_height
+        for idx, date in enumerate(bulks_to_adjust_keys, start=1):
+            self.bulks[date]['height'] = max_height + idx * step
+
+        ax.set_ylim([
+            1.3 * min(ys),
+            max_height + (len(bulks_to_adjust_keys) + 1) * step
+        ])
+
         for idx, rect in enumerate(bar_container):
             if self.data[idx]['corrected']:
                 rect.set_visible(False)
@@ -122,33 +147,32 @@ class DailyTests:
 
             height = rect.get_height()
 
-            if dates[idx] == '2020-07-29':
-                if height > max_height:
-                    # Break bar because of too big height
-                    height = 1.25 * max_height
-                    rect.set_height(height)
-                    ax.set_ylim([1.3 * min(ys), 1.5 * max_height])
+            if dates[idx] in bulks_to_adjust_keys:
+                bulk = self.bulks[dates[idx]]
+                height = bulk['height']
+                rect.set_height(height)
 
-                    # Create break with parallelogram and lines
-                    x = rect.get_x()
-                    w = rect.get_width()
-                    break_y_off = 1.1
-                    ax.add_patch(mpatches.Polygon([
-                        [x - 0.25, break_y_off * max_height],
-                        [x - 0.25, (break_y_off + 0.04) * max_height],
-                        [x + w + 0.5, (break_y_off + 0.06) * max_height],
-                        [x + w + 0.5, (break_y_off + 0.02) * max_height],
-                    ], color='w', clip_on=False))
-                    ax.plot(*zip(
-                        [x - 0.25, break_y_off * max_height],
-                        [x + w + 0.5, (break_y_off + 0.02) * max_height],
-                    ), color='k')
-                    ax.plot(*zip(
-                        [x - 0.25, (break_y_off + 0.04) * max_height],
-                        [x + w + 0.5, (break_y_off + 0.06) * max_height],
-                    ), color='k')
+                # Create break with parallelogram and lines
+                x = rect.get_x()
+                w = rect.get_width()
+                # 1st step: 1.1, 2nd step: 1.3, etc.
+                break_y_off = bulk['height'] / max_height - 0.1
+                ax.add_patch(mpatches.Polygon([
+                    [x - 0.25, break_y_off * max_height],
+                    [x - 0.25, (break_y_off + 0.04) * max_height],
+                    [x + w + 0.5, (break_y_off + 0.06) * max_height],
+                    [x + w + 0.5, (break_y_off + 0.02) * max_height],
+                ], color='w', clip_on=False))
+                ax.plot(*zip(
+                    [x - 0.25, break_y_off * max_height],
+                    [x + w + 0.5, (break_y_off + 0.02) * max_height],
+                ), color='k')
+                ax.plot(*zip(
+                    [x - 0.25, (break_y_off + 0.04) * max_height],
+                    [x + w + 0.5, (break_y_off + 0.06) * max_height],
+                ), color='k')
 
-            if dates[idx] in ('2020-07-29', '2020-08-03'):
+            if dates[idx] in self.bulks:
                 rect.set_facecolor('#E4E4F4')
                 rect.set_edgecolor('#888898')
                 rect.set_hatch('//////')
