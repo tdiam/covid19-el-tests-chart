@@ -57,7 +57,7 @@ jobs:
             git add -A
             git commit -m "workflow: Update plots"
           else
-            echo ::set-env name=CANCEL::true
+            echo "CANCEL=true" >> $GITHUB_ENV
           fi
 
       - name: Push changes
